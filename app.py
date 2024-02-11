@@ -9,7 +9,6 @@ from langchain_core.prompts import ChatMessagePromptTemplate, MessagesPlaceholde
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 
-#OPENAI_API_KEY = "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"
 load_dotenv()
 
 
@@ -21,7 +20,7 @@ def get_vectorstore_from_url(url):
     text_splitter = RecursiveCharacterTextSplitter()
     documents_chunks = text_splitter.split_documents(document)
 
-    vector_store = Chroma.from_documents(documents_chunks,OpenAIEmbeddings(openai_api_key="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") )
+    vector_store = Chroma.from_documents(documents_chunks,OpenAIEmbeddings(openai_api_key="<YOUR Open AI KEY>") )
 
     return vector_store
 
@@ -33,14 +32,14 @@ def get_context_retriever_chain(vector_store):
     prompt = ChatPromptTemplate.from_messages([
         MessagesPlaceholder(variable_name="chat_history"),
         ("user","{input}"),
-        ("user","Given the above converstaion, generate a search query to look up in order to get information relevant to the converstation")
+        ("user", "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation")
     ])
 
     retriever_chain = create_history_aware_retriever(llm,retriever,prompt)
     return retriever_chain
 
 def get_conversational_rag_chain(retriever_chain):
-    llm = ChatOpenAI(openai_api_key="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",model_name="gpt-3.5-turbo-1106")
+    llm = ChatOpenAI(openai_api_key="<YOUR Open AI KEY>",model_name="gpt-3.5-turbo-1106")
     
     prompt = ChatPromptTemplate.from_messages([
       ("system", "Answer the user's questions based on the below context:\n\n{context}"),
